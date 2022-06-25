@@ -23,7 +23,9 @@
     "gatsby": "^4.16.0",
     "gatsby-plugin-typescript": "^4.16.0",
     "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react-dom": "^18.1.0",
+    "util": "^0.12.4",
+    "walletlink": "^2.5.0"
   },
   "devDependencies": {
     "@types/react-helmet": "^6.1.5",
