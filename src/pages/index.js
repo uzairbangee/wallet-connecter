@@ -8,12 +8,20 @@ export default function Home() {
   const [text, setText] = useState("")
 
   useEffect(() => {
-      //  wallet.;
+
+      // (async()=>{
+      //   console.log("hello world");
+      // })()
+      if(wallet.provider.on){
+        console.log("from event listner",wallet.provider)
+        wallet.provider.on("accountsChanged",()=>{console.log("account changed hook")})
+      }            
+
       (async()=>{
         try {
           const account = await wallet.getAccount();
           console.log("account address ---------->",account);
-          account && account.length && setAccount(account)            
+          account && account.length && setAccount(account)
         } catch (error) {
           // setAccount(false);
           console.log("error in getting accounts ----->",error)
@@ -21,7 +29,7 @@ export default function Home() {
       })()
 
     // coinbase_wallet.connect();
-  }, [])
+  }, [wallet.provider])
 
   const connectMetaMaskWallet = async () => {
     try {
@@ -63,7 +71,7 @@ export default function Home() {
   const handleChangeNetwork = async() => {
       await wallet.changeNetwork({
         chainId: '0x13881',
-        rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
+        rpcUrls: ["https://rpc-mumbai.matic.today"],
         chainName: "Matic Mumbai",
         nativeCurrency: {
             name: "MATIC",
@@ -74,12 +82,20 @@ export default function Home() {
       })
   }
 
+  // const fetchNetwork =
+  ( async()=>{
+    console.log("network --------->",(await wallet.getNetwork()).name);
+    // return await wallet.getNetwork();
+  })()
+
+
 
   return (
       // <button onClick={connectWallet}>Hello world!</button>
       account ? <>
       <button onClick={disConnectWallet}>Logout</button>
       <h4>account address is {account}</h4>
+      {/* <h1>chain : {fetchNetwork()}</h1> */}
       <form onSubmit={handleSubmit}>
         <label>sign Msg:</label>
         <input type="text" value={text} onChange={(e)=>{setText(e.target.value)}}/>
@@ -88,6 +104,7 @@ export default function Home() {
       <button onClick={handleChangeNetwork} >change network</button>
       </> :
       <>
+
             <button onClick={connectMetaMaskWallet}>connect metamask wallet!</button>
             <button onClick={connectCoinbaseWallet}>connect coinbase wallet!</button>
 

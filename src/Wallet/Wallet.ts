@@ -108,13 +108,6 @@ export class Wallet {
         if(!this.provider) { return [] }
         const accounts = await this.provider.provider.request?.({ method: 'eth_requestAccounts' })
         return accounts
-        // this.selectedWallet?.connect()
-        // if(this.walletProvider === "metamask"){
-        //     new MetaMaskWallet(this.walletProvider).connect();
-        // }
-        // else if(this.walletProvider === "coinbase"){
-        //     new MetaMaskWallet(this.walletProvider).connect();
-        // }
     }
 
     async getAccounts() {
@@ -126,6 +119,12 @@ export class Wallet {
     async getAccount() {
         return (await this.getAccounts())[0];
     }
+
+    async getNetwork() {
+        if(!this.provider){return undefined}
+        return await this.provider.getNetwork();
+    }
+
 
     async sign(message:any) {
         // let address = await this.getAccount()
@@ -168,10 +167,10 @@ export class Wallet {
     // on(event:any, callback:any) {
     //     let internalCallback
     //     switch (event) {
-    //     //   case 'account':
-    //     //     internalCallback = (accounts:string[]) => callback(accounts[0])
-    //     //     window.ethereum?.on('accountsChanged', internalCallback)
-    //     //     break
+    //       case 'account':
+    //         internalCallback = (accounts:string[]) => callback(accounts[0])
+    //         window.ethereum?.on('accountsChanged', internalCallback)
+    //         break
     //       case 'accountsChanged':
     //         internalCallback = (accounts:string[]) => callback(accounts)
     //         window.ethereum?.on('accountsChanged', internalCallback)
