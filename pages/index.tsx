@@ -1,9 +1,73 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import { type } from "os";
+import { FormEvent, useEffect, useState } from "react";
+import styles from "../styles/Home.module.css";
+import { Web3Wallets } from "../web3Wallet/Web3Wallets";
 
 const Home: NextPage = () => {
+  const wallet = new Web3Wallets("metamask",{
+    rpcUrl:"https://mainnet.infura.io/v3/62687d1a985d4508b2b7a24827551934"
+  });
+  const [accounts, setAccounts] = useState<string[] | undefined>();
+  const [msg, setMsg] = useState<string>("");
+
+  const handleConnect = async () => {
+    try {
+      const accounts = await wallet.connect();
+      console.log("wallet connected ---->", accounts);
+      if (accounts.length) {
+        setAccounts(accounts);
+      }
+    } catch (error) {
+      console.log("error in connecting wallet ", error);
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const signature = await wallet.sign(msg);
+      console.log("wallet signature --->", signature);
+    } catch (err) {
+      console.log("------ signature approval rejected ------ ", err);
+    }
+  };
+
+  const handleChangeNetwork = async () => {
+    await wallet.changeNetwork({
+      chainId: "0x13881",
+      rpcUrls: ["https://rpc-mumbai.matic.today"],
+      chainName: "Matic Mumbai",
+      nativeCurrency: {
+        name: "MATIC",
+        symbol: "MATIC",
+        decimals: 18,
+      },
+      blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+    });
+  };
+
+  useEffect(() => {
+    wallet.on("accountsChanged", () => {
+      setAccounts(undefined);
+    });
+    wallet.on("network", () => {
+      console.log("network change ");
+    });
+
+    (async () => {
+      try {
+        const accounts = await wallet.getAccounts();
+        console.log("connectes account --->", accounts);
+        accounts.length ? setAccounts(accounts) : setAccounts(undefined);
+      } catch (error) {
+        console.log("error in getting account", error);
+      }
+    })();
+  }, []);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -17,8 +81,34 @@ const Home: NextPage = () => {
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
+        {accounts && (
+          <>
+            <h4>your connected wallet address is : {accounts}</h4>
+            <form onSubmit={handleSubmit}>
+              <label>sign Msg:</label>
+              <input
+                type="text"
+                value={msg}
+                onChange={(e) => {
+                  setMsg(e.target.value);
+                }}
+              />
+              <button type="submit">Sign Msg</button>
+            </form>
+            <button onClick={handleChangeNetwork}>
+              change network to polygon
+            </button>
+          </>
+        )}
+
+        {!accounts && (
+          <>
+            <button onClick={handleConnect}>connect metaMask</button>
+          </>
+        )}
+
         <p className={styles.description}>
-          Get started by editing{' '}
+          Get started by editing{" "}
           <code className={styles.code}>pages/index.tsx</code>
         </p>
 
@@ -59,14 +149,14 @@ const Home: NextPage = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
