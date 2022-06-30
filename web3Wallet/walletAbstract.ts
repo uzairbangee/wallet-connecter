@@ -1,5 +1,5 @@
 import { Network, Web3Provider } from "@ethersproject/providers";
-import { addNetwork, SUPPORTED_WALLETS } from "./types";
+import { addNetwork, Events, SUPPORTED_WALLETS } from "./types";
 
 abstract class WalletAbstract {
   private wallet: SUPPORTED_WALLETS;
@@ -22,7 +22,7 @@ abstract class WalletAbstract {
 
   abstract getNetwork(network: addNetwork): Promise<Network | undefined>;
 
-  abstract on(event: any, callback: any): any
+  abstract on(event: Events, callback: any): any
 }
 
 export { WalletAbstract };

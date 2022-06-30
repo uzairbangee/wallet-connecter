@@ -1,7 +1,7 @@
 import { Network, Web3Provider } from "@ethersproject/providers";
 import { CoinbaseWallet } from "./Coinbase";
 import { MetaMaskWallet } from "./MetaMask";
-import { addNetwork, SUPPORTED_WALLETS } from "./types";
+import { addNetwork, Events, SUPPORTED_WALLETS } from "./types";
 import { ExtensionWallet } from "./ExtensionWallet";
 import { WalletAbstract } from "./walletAbstract";
 
@@ -48,7 +48,7 @@ export class Web3Wallets extends WalletAbstract {
         return this.instance.getAccounts();
     }
 
-    on(event: any, callback: any) {
+    on(event: Events, callback: any) {
         this.instance.on(event, callback);
     }
 }

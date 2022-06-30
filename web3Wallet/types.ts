@@ -12,9 +12,11 @@ interface currency {
   decimals: number;
 }
 
+export type Events = "account" | "accountsChanged" | "network" | "disconnect";
+
 export type SUPPORTED_WALLETS = "metamask" | "coinbase";
 
-type Network = {
+export type Network = {
   name: string;
   chainId: number;
   ensAddress?: string;

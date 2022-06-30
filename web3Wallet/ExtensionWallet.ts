@@ -1,6 +1,6 @@
 import { Web3Provider } from "@ethersproject/providers";
 import { ConnectCoinbaseInstance, ConnectMetaMaskInstance } from "./helper";
-import { addNetwork, SUPPORTED_WALLETS } from "./types";
+import { addNetwork, Events, SUPPORTED_WALLETS } from "./types";
 import { WalletAbstract } from "./walletAbstract";
 
 export class ExtensionWallet extends WalletAbstract {
@@ -70,7 +70,7 @@ export class ExtensionWallet extends WalletAbstract {
     return await this.library?.send("wallet_addEthereumChain", [network]);
   }
 
-  on(event: any, callback: any) {
+  on(event: Events, callback: any) {
     let internalCallback
     switch (event) {
       case 'account':
